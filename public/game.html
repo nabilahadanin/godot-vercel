@@ -239,6 +239,20 @@ const engine = new Engine(GODOT_CONFIG);
 		}).then(() => {
 			setStatusMode('hidden');
 			initializing = false;
+
+			// === Tambahan kita mulai dari sini ===
+			const token = sessionStorage.getItem("supabase_access_token");
+			if (token) {
+				// Tunggu frame berikutnya agar scene tree siap
+				setTimeout(() => {
+					engine.call("SupabaseSession", "receive_token_from_web", token);
+					console.log("Token dikirim ke Godot:", token);
+				}, 100);
+			} else {
+				console.warn("Tidak ada token di sessionStorage. Balik ke login...");
+				window.location.href = "index.html";
+			}
+			// === Tambahan selesai ===
 		}, displayFailureNotice);
 	}
 }());
