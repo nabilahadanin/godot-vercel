@@ -229,12 +229,12 @@ body {
 						setStatusMode('hidden');
 						initializing = false;
 
-						// === Inject: Kirim token ke Godot setelah game siap ===
+						const godotInstance = engine.getInstance();
 						const token = sessionStorage.getItem('supabase_access_token');
-						if (token) {
+						if (godotInstance && token) {
 							console.log("[WebBridge] Sending token to Godot...");
-							engine.call("SupabaseSession", "receive_token_from_web", token);
-						} else {
+							godotInstance.call("SupabaseSession", "receive_token_from_web", token);
+						} else if (!token) {
 							console.warn("[WebBridge] No token found in sessionStorage");
 						}
 					}, displayFailureNotice);
