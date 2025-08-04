@@ -219,22 +219,23 @@ body {
 								statusProgressInner.style.width = `${(current / total) * 100}%`;
 								setStatusMode('progress');
 								if (current === total) {
-									setTimeout(() => setStatusMode('indeterminate'), 500);
+									setTimeout(() => {
+										setStatusMode('indeterminate');
+									}, 500);
 								}
 							} else {
 								setStatusMode('indeterminate');
 							}
 						},
-					}).then(() => {
+					}).then((godotInstance) => {
 						setStatusMode('hidden');
 						initializing = false;
 
-						const godotInstance = engine.getInstance();
 						const token = sessionStorage.getItem('supabase_access_token');
-						if (godotInstance && token) {
+						if (token) {
 							console.log("[WebBridge] Sending token to Godot...");
 							godotInstance.call("SupabaseSession", "receive_token_from_web", token);
-						} else if (!token) {
+						} else {
 							console.warn("[WebBridge] No token found in sessionStorage");
 						}
 					}, displayFailureNotice);
