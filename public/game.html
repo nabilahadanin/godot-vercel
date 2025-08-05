@@ -224,7 +224,7 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 		displayFailureNotice(missingMsg + missing.join('\n'));
 	} else {
 		setStatusMode('indeterminate');
-		engine.startGame({
+		var godotInstance = engine.startGame({
 			'onProgress': function (current, total) {
 				if (total > 0) {
 					statusProgressInner.style.width = `${(current / total) * 100}%`;
@@ -239,14 +239,14 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 					setStatusMode('indeterminate');
 				}
 			},
-		}).then((godot) => {
+		})
+		
+		godotInstance.then(engine => {
+ 			console.log("✅ Godot engine started!");
 			setStatusMode('hidden');
 			initializing = false;
-
-			window.godotInstance = godot;
-
-			// Sekarang kamu bisa fetch data
-			fetchDataFromAPI();
+			window.godotInstance = engine; // ← Ini penting!
+  			fetchDataFromAPI();
 				
 		}, displayFailureNotice);
 	}
