@@ -225,6 +225,22 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 	} else {
 		setStatusMode('indeterminate');
 		var godotInstance = engine.startGame({
+			'onReady': function () {
+				console.log("✅ Godot engine ready!");
+				setStatusMode('hidden');
+				initializing = false;
+				window.godotInstance = engine; // ← Ini penting!
+				console.log("🧠 window.godotInstance sekarang:", window.godotInstance);
+				if (window.token && window.user_id) {
+					console.log("Token & User ID ditemukan, mengirim data ke Godot...");
+					fetchDataFromAPI();
+				} else {
+					console.warn("⚠️ Token atau User ID tidak ditemukan.");
+				}
+			},
+			'onError': function (err) {
+				displayFailureNotice('❌ Error: ' + err.message);
+			},
 			'onProgress': function (current, total) {
 				if (total > 0) {
 					statusProgressInner.style.width = `${(current / total) * 100}%`;
@@ -239,16 +255,13 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 					setStatusMode('indeterminate');
 				}
 			},
-		})
-		
-		godotInstance.then(engine => {
- 			console.log("✅ Godot engine started!");
-			setStatusMode('hidden');
+		});
+		if (!godotInstance) {
+			const missingMsg = 'Error\nGodot engine failed to start.\n';
+			displayFailureNotice(missingMsg + 'Please check your browser console for more details.');
 			initializing = false;
-			window.godotInstance = engine; // ← Ini penting!
-  			fetchDataFromAPI();
-				
-		}, displayFailureNotice);
+			return;
+		}
 	}
 }());
 	function fetchDataFromAPI() {
