@@ -139,9 +139,6 @@ body {
 		<script>
 			const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1547408,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
 			const engine = new Engine(GODOT_CONFIG);
-			const token = sessionStorage.getItem('supabase_access_token');
-			console.log(token ? "[WebBridge] Token found in sessionStorage" : "[WebBridge] No token found in sessionStorage");
-			window.supabase_token = token || null;
 
 			(function () {
 				const INDETERMINATE_STATUS_STEP_MS = 100;
@@ -231,17 +228,27 @@ body {
 							}
 						},
 					}).then((godotInstance) => {
+						// simpan supaya bisa diakses global
+						window.godotInstance = godotInstance;
+						console.log("[WebBridge] Godot instance ready:", !!window.godotInstance);
 						setStatusMode('hidden');
 						initializing = false;
-
-						const token = sessionStorage.getItem('supabase_access_token');
-						if (token) {
-							console.log("[WebBridge] Sending token to Godot...");
-							godotInstance.call("SupabaseSession", "receive_token_from_web", token);
-						} else {
-							console.warn("[WebBridge] No token found in sessionStorage");
-						}
 					}, displayFailureNotice);
+
+					// helper yang dipanggil dari Godot ketika siap
+					window.sendTokenToGodot = () => {
+					const token = sessionStorage.getItem('supabase_access_token');
+					if (!token) {
+						console.warn("[WebBridge] No token found in sessionStorage");
+						return;
+					}
+					if (!window.godotInstance) {
+						console.warn("[WebBridge] godotInstance not ready yet");
+						return;
+					}
+					console.log("[WebBridge] Sending token to Godot via helper...");
+						window.godotInstance.call("SupabaseSession", "receive_token_from_web", token);
+					};
 				}
 			}());
 		</script>
