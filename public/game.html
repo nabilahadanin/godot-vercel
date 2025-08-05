@@ -137,7 +137,7 @@ body {
 
 		<script src="ashes-of-eirion.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1696192,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1720688,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
@@ -216,7 +216,7 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 
 	const missing = Engine.getMissingFeatures();
-	let godotInstance = null;
+	let godotInstance = null; 
 	if (missing.length !== 0) {
 		const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 		displayFailureNotice(missingMsg + missing.join('\n'));
@@ -238,7 +238,7 @@ const engine = new Engine(GODOT_CONFIG);
 				}
 			},
 		}).then((instance) => {
-			godotInstance = instance;
+			window.godotInstance = instance; 
 			if (instance) {
 				window.GodotRuntime = instance;
 			} else {
@@ -264,11 +264,11 @@ const engine = new Engine(GODOT_CONFIG);
 					})
 					.then(data => {
 						// Send data back to Godot
-						godotInstance.call('world', 'receive_data', JSON.stringify(data));  // ✅ FIXED
+						window.godotInstance.call('world', 'receive_data', JSON.stringify(data));  // ✅ FIXED
 					})
 					.catch(error => {
 						console.error('Error fetching data:', error);
-						godotInstance.call('world', 'handle_error', error.message);
+						window.godotInstance.call('world', 'handle_error', error.message);
 					});
 			};
 		}, displayFailureNotice);
