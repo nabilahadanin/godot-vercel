@@ -243,8 +243,8 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 		}).then((instance) => {
 			if (!instance) {
 				console.warn("⚠️ Godot instance is null! Akan coba retry nanti.");
-				return;
 			}
+			console.log("masuk sini?")
 			window.godotInstance = instance;
 
 			setStatusMode('hidden');
