@@ -241,10 +241,11 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 				}
 			},
 		}).then((instance) => {
-			if (!instance) throw new Error('Godot instance is null');
-
+			if (!instance) {
+				console.warn("⚠️ Godot instance is null! Akan coba retry nanti.");
+				return;
+			}
 			window.godotInstance = instance;
-			window.GodotRuntime = instance; // Optional alias
 
 			setStatusMode('hidden');
 			initializing = false;
