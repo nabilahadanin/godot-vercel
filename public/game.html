@@ -242,35 +242,34 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 		}).then(() => {
 			setStatusMode('hidden');
 			initializing = false;
+
+			window.fetchDataFromAPI = function () {
+				console.log('Fetching data from API');
+
+				const url = `https://peupxardkrcgosdfhzfw.supabase.co/rest/v1/players?id=eq.${window.user_id}`;
+				const headers = {
+					Authorization: `Bearer ${window.token}`,
+					apikey: window.apikey,
+					Accept: 'application/json'
+				};
+
+				fetch(url, { headers })
+					.then(response => {
+						if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+						return response.json();
+					})
+					.then(data => {
+						// Send data back to Godot
+						engine.call('world', 'receive_data', JSON.stringify(data));
+					})
+					.catch(error => {
+						console.error('Error fetching data:', error);
+						engine.call('world', 'handle_error', error.message);
+					});
+			};
 		}, displayFailureNotice);
 	}
 }());
-	function fetchDataFromAPI() {
-		console.log('Fetching data from API');
-
-		const url = `https://peupxardkrcgosdfhzfw.supabase.co/rest/v1/players?id=eq.${window.user_id}`;
-		const headers = {
-			Authorization: `Bearer ${window.token}`,
-			apikey: window.apikey,
-			Accept: 'application/json'
-		};
-
-		fetch(url, { headers })
-			.then(response => {
-				if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-				return response.json();
-			})
-			.then(data => {
-				// Send data back to Godot
-				engine.call('world', 'receive_data', JSON.stringify(data));
-			})
-			.catch(error => {
-				console.error('Error fetching data:', error);
-				engine.call('world', 'handle_error', error.message);
-			});
-	}
-
-	window.fetchDataFromAPI = fetchDataFromAPI;
 		</script>
 	</body>
 </html>
