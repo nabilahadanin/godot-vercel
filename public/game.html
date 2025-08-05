@@ -225,11 +225,11 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 		displayFailureNotice(missingMsg + missing.join('\n'));
 	} else {
 		setStatusMode('indeterminate');
-		engine.startGame().then(function(godotInstance) {
+		engine.startGame().then(function() {
 			console.log("✅ Godot engine ready!");
 			setStatusMode('hidden');
 			initializing = false;
-			window.godotInstance = godotInstance; // ← Ini yang benar!
+			window.godotInstance = engine.instance; // ← Ini yang benar!
 			console.log("🧠 window.godotInstance sekarang:", window.godotInstance);
 			if (window.token && window.user_id) {
 				console.log("Token & User ID ditemukan, mengirim data ke Godot...");
