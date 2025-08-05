@@ -219,7 +219,6 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 	}
 
 	const missing = Engine.getMissingFeatures();
-	let godotInstance = null; 
 	if (missing.length !== 0) {
 		const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 		displayFailureNotice(missingMsg + missing.join('\n'));
@@ -240,45 +239,41 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 					setStatusMode('indeterminate');
 				}
 			},
-		}).then((instance) => {
-			if (!instance) {
-				console.warn("⚠️ Godot instance is null! Akan coba retry nanti.");
-			}
-			console.log("masuk sini?")
-			window.godotInstance = instance;
-
+		}).then((godot) => {
 			setStatusMode('hidden');
 			initializing = false;
 
-			// ✅ Define function after Godot is ready
-			window.fetchDataFromAPI = function () {
-				console.log('📡 Fetching data from API');
+			window.godotInstance = godot;
 
-				const url = `https://peupxardkrcgosdfhzfw.supabase.co/rest/v1/players?id=eq.${window.user_id}`;
-				const headers = {
-					Authorization: `Bearer ${window.token}`,
-					apikey: window.apikey,
-					Accept: 'application/json'
-				};
-
-				fetch(url, { headers })
-					.then(response => {
-						if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-						return response.json();
-					})
-					.then(data => {
-						window.godotInstance.call('world', 'receive_data', JSON.stringify(data));
-					})
-					.catch(error => {
-						console.error('❌ Error fetching data:', error);
-						window.godotInstance.call('world', 'handle_error', error.message);
-					});
-			};
-
-			window.fetchDataFromAPI();
+			// Sekarang kamu bisa fetch data
+			fetchDataFromAPI();
+				
 		}, displayFailureNotice);
 	}
 }());
+	function fetchDataFromAPI() {
+		console.log('📡 Fetching data from API');
+
+		const url = `https://peupxardkrcgosdfhzfw.supabase.co/rest/v1/players?id=eq.${window.user_id}`;
+		const headers = {
+			Authorization: `Bearer ${window.token}`,
+			apikey: window.apikey,
+			Accept: 'application/json'
+		};
+
+		fetch(url, { headers })
+			.then(response => {
+				if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+				return response.json();
+			})
+			.then(data => {
+				window.godotInstance.call('world', 'receive_data', JSON.stringify(data));
+			})
+			.catch(error => {
+				console.error('❌ Error fetching data:', error);
+				window.godotInstance.call('world', 'handle_error', error.message);
+			});
+	};
 		</script>
 	</body>
 </html>
