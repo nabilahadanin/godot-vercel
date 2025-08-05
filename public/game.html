@@ -247,22 +247,27 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 }());
 	function fetchDataFromAPI() {
 		console.log('Fetching data from API');
-		fetch('https://peupxardkrcgosdfhzfw.supabase.co/rest/v1/players?id=eq.%s', {
-		headers: {
-			Authorization: 'Bearer %s',
-			apikey: '%s',
+
+		const url = `https://peupxardkrcgosdfhzfw.supabase.co/rest/v1/players?id=eq.${window.user_id}`;
+		const headers = {
+			Authorization: `Bearer ${window.token}`,
+			apikey: window.apikey,
 			Accept: 'application/json'
-			}.replace('%s', window.user_id).replace('%s', window.token).replace('%s', window.apikey)
-		})
-		.then(response => response.json())
-		.then(data => {
-			// Send data back to Godot
-			GodotRuntime.call_deferred('world', 'receive_data', JSON.stringify(data));
-		})
-		.catch(error => {
-			console.error('Error fetching data:', error);
-			GodotRuntime.call_deferred('world', 'handle_error', error.message);
-		});
+		};
+
+		fetch(url, { headers })
+			.then(response => {
+				if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+				return response.json();
+			})
+			.then(data => {
+				// Send data back to Godot
+				GodotRuntime.call_deferred('world', 'receive_data', JSON.stringify(data));
+			})
+			.catch(error => {
+				console.error('Error fetching data:', error);
+				GodotRuntime.call_deferred('world', 'handle_error', error.message);
+			});
 	}
 		</script>
 	</body>
