@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bclxy3uupt5cq"
-path="res://.godot/imported/ashes-of-eirion.png-5a079a471d85c06f136085b7966ab8e8.ctex"
+uid="uid://cr1hx644d1v6q"
+path="res://.godot/imported/ashes-of-eirion.png-e4c7fc516d41ed3fd2fb4027785dbd4b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://build/var 26/ashes-of-eirion.png"
-dest_files=["res://.godot/imported/ashes-of-eirion.png-5a079a471d85c06f136085b7966ab8e8.ctex"]
+source_file="res://build/var 27/ashes-of-eirion.png"
+dest_files=["res://.godot/imported/ashes-of-eirion.png-e4c7fc516d41ed3fd2fb4027785dbd4b.ctex"]
 
 [params]
 
