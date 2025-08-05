@@ -245,6 +245,9 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 					console.warn("⚠️ godotInstance masih undefined, mencoba lagi...");
 					// Tunggu 100ms sebelum mencoba lagi
 					setTimeout(() => waitForGodotInstance(retry - 1), 100);
+					console.log("engine:", engine);
+					console.log("engine.instance:", engine.instance);
+					console.log("engine properties:", Object.keys(engine));
 				} else {
 					console.error("❌ godotInstance tetap undefined setelah menunggu.");
 				}
