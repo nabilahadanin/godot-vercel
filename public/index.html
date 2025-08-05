@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>Login Portal</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<style>
-  body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;max-width:600px;margin:2rem auto;padding:1rem;}
-  .card{padding:1rem;border:1px solid #ccc;border-radius:8px;}
-  input{width:100%;padding:.5rem;margin:.5rem 0;}
-  button{padding:.6rem 1rem;cursor:pointer;margin-right:.5rem;}
-  .status{margin-top:.5rem;font-size:.9rem;color:#444;}
-</style>
+  <meta charset="utf-8" />
+  <title>Login Portal</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .card {
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    button {
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+    .status {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #444;
+    }
+  </style>
 </head>
 <body>
   <div class="card">
@@ -43,31 +64,41 @@
         return
       }
       statusEl.textContent = isSignup ? 'Mendaftar...' : 'Login...'
+
       let res
       if (isSignup) {
         res = await supabase.auth.signUp({ email, password })
       } else {
         res = await supabase.auth.signInWithPassword({ email, password })
       }
+
       if (res.error) {
         statusEl.textContent = 'Error: ' + res.error.message
         return
       }
+
       const session = res.data.session
+      const user = res.data.user
+
       if (!session) {
         statusEl.textContent = 'Butuh verifikasi email (cek inbox).' 
         return
       }
 
-      // Simpan token di sessionStorage untuk diambil oleh game.html
+      // ✅ Simpan token & user ID di sessionStorage
       sessionStorage.setItem('supabase_access_token', session.access_token)
       sessionStorage.setItem('supabase_refresh_token', session.refresh_token)
+      sessionStorage.setItem('supabase_user_id', user.id)
+
+      console.log("Login sukses")
+      console.log("User ID:", user.id)
+      console.log("Access Token:", session.access_token)
+
       statusEl.textContent = 'Login sukses. Mengalihkan ke game...'
 
-      // Redirect ke game.html (bisa ubah query param kalau perlu)
       setTimeout(() => {
-        window.location.href = 'game.html'
-      }, 500)
+        window.location.href = 'game.html'  // atau ke file Godot yang kamu hosting
+      }, 800)
     }
 
     document.getElementById('loginBtn').addEventListener('click', () => handleLogin(false))
