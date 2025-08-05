@@ -137,12 +137,8 @@ body {
 
 		<script src="ashes-of-eirion.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1791824,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1815808,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
 const engine = new Engine(GODOT_CONFIG);
-window.token = sessionStorage.getItem('supabase_access_token');
-window.user_id = sessionStorage.getItem('supabase_user_id');
-window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldXB4YXJka3JjZ29zZGZoemZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2OTk1NjMsImV4cCI6MjA2NzI3NTU2M30.sAv9ouFlirdNZ--M_NBYap51pcGGpXToW2JQ8DqmQVQ';
-
 
 (function () {
 	const INDETERMINATE_STATUS_STEP_MS = 100;
@@ -225,68 +221,27 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 		displayFailureNotice(missingMsg + missing.join('\n'));
 	} else {
 		setStatusMode('indeterminate');
-		engine.startGame().then(function() {
-			console.log("✅ Godot engine ready!");
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (total > 0) {
+					statusProgressInner.style.width = `${(current / total) * 100}%`;
+					setStatusMode('progress');
+					if (current === total) {
+						// wait for progress bar animation
+						setTimeout(() => {
+							setStatusMode('indeterminate');
+						}, 500);
+					}
+				} else {
+					setStatusMode('indeterminate');
+				}
+			},
+		}).then(() => {
 			setStatusMode('hidden');
 			initializing = false;
-
-    		// Tunggu sampai engine.instance benar-benar terisi
-    		function waitForGodotInstance(retry = 20) {
-				if (engine.instance) {
-					window.godotInstance = engine.instance;
-					console.log("🧠 window.godotInstance sekarang:", window.godotInstance);
-					if (window.token && window.user_id) {
-						console.log("Token & User ID ditemukan, mengirim data ke Godot...");
-						fetchDataFromAPI();
-					} else {
-						console.warn("⚠️ Token atau User ID tidak ditemukan.");
-					}
-				} else if (retry > 0) {
-					console.warn("⚠️ godotInstance masih undefined, mencoba lagi...");
-					// Tunggu 100ms sebelum mencoba lagi
-					setTimeout(() => waitForGodotInstance(retry - 1), 100);
-					console.log("engine:", engine);
-					console.log("engine.instance:", engine.instance);
-					console.log("engine properties:", Object.keys(engine));
-				} else {
-					console.error("❌ godotInstance tetap undefined setelah menunggu.");
-				}
-			}
-			waitForGodotInstance();
-		}).catch(function(err) {
-			displayFailureNotice('❌ Error: ' + err.message);
-		});
+		}, displayFailureNotice);
 	}
 }());
-	function fetchDataFromAPI() {
-		console.log('📡 Fetching data from API');
-
-		const url = `https://peupxardkrcgosdfhzfw.supabase.co/rest/v1/players?id=eq.${window.user_id}`;
-		const headers = {
-			Authorization: `Bearer ${window.token}`,
-			apikey: window.apikey,
-			Accept: 'application/json'
-		};
-
-		fetch(url, { headers })
-		.then(response => {
-		if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-		return response.json();
-		})
-		.then(data => {
-		if (window.godotInstance) {
-			window.godotInstance.call('world', 'receive_data', JSON.stringify(data));
-		} else {
-			console.warn("⚠️ godotInstance belum tersedia saat mencoba kirim data.");
-		}
-		})
-		.catch(error => {
-		console.error('❌ Error fetching data:', error);
-		if (window.godotInstance) {
-			window.godotInstance.call('world', 'handle_error', error.message);
-		}
-		});
-	}
 		</script>
 	</body>
 </html>
