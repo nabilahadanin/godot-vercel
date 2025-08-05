@@ -137,7 +137,7 @@ body {
 
 		<script src="ashes-of-eirion.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1720688,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1743920,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
 const engine = new Engine(GODOT_CONFIG);
 window.token = sessionStorage.getItem('supabase_access_token');
 window.user_id = sessionStorage.getItem('supabase_user_id');
@@ -224,7 +224,7 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 		displayFailureNotice(missingMsg + missing.join('\n'));
 	} else {
 		setStatusMode('indeterminate');
-		var godotInstance = engine.startGame({
+		var godotInstance = Engine.startGame({
 			'onProgress': function (current, total) {
 				if (total > 0) {
 					statusProgressInner.style.width = `${(current / total) * 100}%`;
@@ -262,18 +262,25 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 		};
 
 		fetch(url, { headers })
-			.then(response => {
-				if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-				return response.json();
-			})
-			.then(data => {
-				window.godotInstance.call('world', 'receive_data', JSON.stringify(data));
-			})
-			.catch(error => {
-				console.error('❌ Error fetching data:', error);
-				window.godotInstance.call('world', 'handle_error', error.message);
-			});
-	};
+		.then(response => {
+		if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+		return response.json();
+		})
+		.then(data => {
+		if (window.godotInstance) {
+			window.godotInstance.call('world', 'receive_data', JSON.stringify(data));
+		} else {
+			console.warn("⚠️ godotInstance belum tersedia saat mencoba kirim data.");
+		}
+		})
+		.catch(error => {
+		console.error('❌ Error fetching data:', error);
+		if (window.godotInstance) {
+			window.godotInstance.call('world', 'handle_error', error.message);
+		}
+		});
+	}
+	
 		</script>
 	</body>
 </html>
