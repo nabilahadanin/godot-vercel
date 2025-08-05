@@ -220,6 +220,7 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 	}
 
 	const missing = Engine.getMissingFeatures();
+	let godotInstance = null; 
 	if (missing.length !== 0) {
 		const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 		displayFailureNotice(missingMsg + missing.join('\n'));
@@ -240,7 +241,13 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 					setStatusMode('indeterminate');
 				}
 			},
-		}).then(() => {
+		}).then((instance) => {
+			godotInstance = instance;
+			if (instance) {
+				window.GodotRuntime = instance;
+			} else {
+				throw new Error('Godot instance is null');
+			}
 			setStatusMode('hidden');
 			initializing = false;
 
@@ -261,11 +268,11 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 					})
 					.then(data => {
 						// Send data back to Godot
-						GodotRuntime.call('world', 'receive_data', JSON.stringify(data));  // ✅ FIXED
+						godotInstance.call('world', 'receive_data', JSON.stringify(data));  // ✅ FIXED
 					})
 					.catch(error => {
 						console.error('Error fetching data:', error);
-						GodotRuntime.call('world', 'handle_error', error.message);  
+						godotInstance.call('world', 'handle_error', error.message);
 					});
 			};
 		}, displayFailureNotice);
