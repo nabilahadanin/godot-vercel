@@ -137,7 +137,7 @@ body {
 
 		<script src="ashes-of-eirion.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1572560,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1593392,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
@@ -236,28 +236,10 @@ const engine = new Engine(GODOT_CONFIG);
 					setStatusMode('indeterminate');
 				}
 			},
-		}).then((godotInstance) => {
-			// simpan supaya bisa diakses global
-			window.godotInstance = godotInstance;
-			console.log("[WebBridge] Godot instance ready:", !!window.godotInstance);
+		}).then(() => {
 			setStatusMode('hidden');
 			initializing = false;
 		}, displayFailureNotice);
-
-		// helper yang dipanggil dari Godot ketika siap
-		window.sendTokenToGodot = () => {
-			const token = sessionStorage.getItem('supabase_access_token');
-			if (!token) {
-				console.warn("[WebBridge] No token found in sessionStorage");
-				return;
-			}
-			if (!window.godotInstance) {
-				console.warn("[WebBridge] godotInstance not ready yet");
-				return;
-			}
-			console.log("[WebBridge] Sending token to Godot via helper...");
-			window.godotInstance.call("SupabaseSession", "receive_token_from_web", token);
-		};
 	}
 }());
 		</script>
