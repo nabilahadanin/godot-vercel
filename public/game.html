@@ -137,11 +137,12 @@ body {
 
 		<script src="ashes-of-eirion.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1622528,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1646832,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
 const engine = new Engine(GODOT_CONFIG);
 window.token = sessionStorage.getItem('supabase_access_token');
 window.user_id = sessionStorage.getItem('supabase_user_id');
 window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldXB4YXJka3JjZ29zZGZoemZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2OTk1NjMsImV4cCI6MjA2NzI3NTU2M30.sAv9ouFlirdNZ--M_NBYap51pcGGpXToW2JQ8DqmQVQ';
+
 
 (function () {
 	const INDETERMINATE_STATUS_STEP_MS = 100;
@@ -262,11 +263,11 @@ window.apikey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 			})
 			.then(data => {
 				// Send data back to Godot
-				GodotRuntime.call_deferred('world', 'receive_data', JSON.stringify(data));
+				engine.call('world', 'receive_data', JSON.stringify(data));
 			})
 			.catch(error => {
 				console.error('Error fetching data:', error);
-				GodotRuntime.call_deferred('world', 'handle_error', error.message);
+				engine.call('world', 'handle_error', error.message);
 			});
 	}
 		</script>

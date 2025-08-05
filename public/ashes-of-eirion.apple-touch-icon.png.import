@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://crwfrkul0qux6"
-path="res://.godot/imported/ashes-of-eirion.apple-touch-icon.png-0ed8705686b14f8f4f96f7f840295e6e.ctex"
+uid="uid://dqr1xdhh5qp4w"
+path="res://.godot/imported/ashes-of-eirion.apple-touch-icon.png-0625c544fe42e0f56acbcf9d06c99eb4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://build/var 8/ashes-of-eirion.apple-touch-icon.png"
-dest_files=["res://.godot/imported/ashes-of-eirion.apple-touch-icon.png-0ed8705686b14f8f4f96f7f840295e6e.ctex"]
+source_file="res://build/var 9/ashes-of-eirion.apple-touch-icon.png"
+dest_files=["res://.godot/imported/ashes-of-eirion.apple-touch-icon.png-0625c544fe42e0f56acbcf9d06c99eb4.ctex"]
 
 [params]
 
