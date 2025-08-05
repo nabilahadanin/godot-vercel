@@ -137,7 +137,7 @@ body {
 
 		<script src="ashes-of-eirion.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1576208,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"ashes-of-eirion","experimentalVK":false,"fileSizes":{"ashes-of-eirion.pck":1598272,"ashes-of-eirion.wasm":49282035},"focusCanvas":true,"gdextensionLibs":[]};
 const engine = new Engine(GODOT_CONFIG);
 window.token = sessionStorage.getItem('supabase_access_token');
 window.user_id = sessionStorage.getItem('supabase_user_id');
@@ -244,6 +244,19 @@ window.user_id = sessionStorage.getItem('supabase_user_id');
 		}, displayFailureNotice);
 	}
 }());
+	function fetchDataFromAPI(url) {
+		console.log('Fetching data from API:', url);
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Send data back to Godot
+                GodotRuntime.call_deferred('MyNode', 'receive_data', JSON.stringify(data));
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                GodotRuntime.call_deferred('MyNode', 'handle_error', error.message);
+            });
+    }
 		</script>
 	</body>
 </html>
