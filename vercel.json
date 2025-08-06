@@ -15,9 +15,7 @@
     }
   ],
   "rewrites": [
-    { "source": "/", "destination": "/index.html" }
-  ],
-  "static": {
-    "publicDirectory": "public"
-  }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/game", "destination": "/game.html" }
+  ]
 }
